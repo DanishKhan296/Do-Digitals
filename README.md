@@ -1,146 +1,227 @@
-# TIMES UP COLLECTIONS — Full-Stack E-Commerce + CMS
+# DO DIGITALS — Full-Stack Digital Agency Website
 
-> **Time Defines Your Style.** A premium, responsive e-commerce website for TIMES UP COLLECTIONS with a complete admin CMS, WhatsApp-based ordering, secure authentication, and full content management.
+**WHERE BRANDS TAKE FLIGHT!**
 
-## Major Update — What's New
+A complete, production-ready full-stack website for the DO DIGITALS digital agency:
+premium multi-page public site + secure admin dashboard (CMS) + persistent database,
+all fully responsive with dark/light themes and deep WhatsApp integration.
 
-This version adds a complete Content Management System, Reviews management, Media Library, strengthened security (bcrypt, rate limiting, server-side sessions, activity logging), transparent logos, and a reorganized admin dashboard with 12 sections.
+---
 
-### Logo Improvements
-- **Transparent PNGs**: Both dark and light logos have been converted from JPEG (with solid rectangular backgrounds) to transparent PNGs. The original artwork (TU watch emblem, TIMES/UP typography, COLLECTIONS subtitle, tagline) is preserved exactly — only the unwanted rectangular background was removed.
-- **Larger size**: The navbar logo is now ~39% larger than the original (78×78px on desktop, 48×48px on mobile) for better visibility while maintaining proportions and not overlapping navigation.
-- **Auto theme switching**: The correct transparent logo is automatically displayed based on the active theme.
+## 1. Tech Stack
 
-### Mobile Buy Now Button Fix
-- The main "Buy Now on WhatsApp" button is now `h-14` (56px) on mobile with `text-base` font and `whitespace-normal` to prevent text clipping.
-- The sticky mobile bottom purchase bar button is now `h-12` (48px) with `min-w-[140px]` and `whitespace-nowrap` so "Buy Now" is always fully visible.
-- Safe-area inset padding is respected on iOS devices.
-
-### Direct Image Upload (URL field removed)
-- The Image URL textarea has been **completely removed** from both Add Product and Edit Product forms.
-- The only way to add product images is now **direct upload from computer**.
-- Supports JPG, JPEG, PNG, WebP. Max 8 MB per file. Multiple images supported per product.
-- Live preview during upload with progress indicator.
-- Thumbnail list with "MAIN" badge, remove, and reorder buttons.
-- All uploads are stored permanently on the server in `public/uploads/` and recorded in the `MediaAsset` database table.
-
-## Tech Stack
-
-| Layer | Choice |
+| Layer | Technology |
 |---|---|
-| Framework | Next.js 16 (App Router) + TypeScript 5 |
-| Styling | Tailwind CSS 4 + shadcn/ui (New York) |
-| Database | Prisma + SQLite |
-| Auth | bcrypt + server-side sessions + rate limiting |
-| Icons | Lucide React |
-| Image processing | sharp (for logo background removal) |
+| Framework | Next.js 16 (App Router) + React 19 + TypeScript 5 |
+| Styling | Tailwind CSS 4 + shadcn/ui (New York) + Lucide icons |
+| Animation | Framer Motion (reduced-motion aware) |
+| Server state | TanStack Query v5 |
+| Database | SQLite via Prisma ORM (`db/custom.db`) |
+| Auth | Custom JWT sessions (jose) + bcrypt hashing, httpOnly cookies |
+| Validation | Server-side (per-route) + client-side, honeypot + rate limiting |
+| Theme | next-themes (class strategy, system-default aware) |
+| Toasts | Sonner |
 
-## Admin Dashboard
+The whole application (public pages **and** admin CMS) is served under the single
+route `/` using hash routing (`#/about`, `#/portfolio`, `#/admin`, ...). This makes
+deployment trivial on any static-capable Node host while keeping a real database,
+real APIs, and real persistence.
 
-The admin dashboard at `/#/admin` is organized into 12 sections accessible via a sidebar:
+## 2. Features
 
-### Content Sections
-1. **Overview** — Stats grid (products, reviews, media, stock), quick actions, launch checklist
-2. **Homepage** — Edit hero (heading, description, CTA, image, badge), benefits strip (4 items with icon picker), section visibility toggles, section titles/subtitles, promo banner, final CTA
-3. **Website Pages** — Edit About (with image), Contact intro, FAQ (add/remove/reorder), Shipping/Returns/Privacy/Terms policies
-4. **Reviews** — Add/edit/delete customer reviews, approve/hide toggle, star ratings. Only approved reviews appear on the storefront.
+### Public website
+- **Home** — hero, about preview, 4 service cards, why-choose grid, featured
+  portfolio with category filters, working process (Discover→Plan→Create→Launch→Grow),
+  database-driven testimonials, animated statistics, WhatsApp CTA, full footer.
+  Every section can be toggled on/off from the admin Homepage editor.
+- **About** — story, mission, vision, core values, working approach, CTA.
+- **Services** — index page + 4 fully-designed service detail pages (Graphic
+  Designing, Digital Marketing, Web Development, Software Development) with
+  features, rich-text descriptions, related projects, FAQs, service-specific
+  WhatsApp pre-filled messages.
+- **Portfolio** — database-driven gallery with category filters, search,
+  featured flag, detail pages with image gallery + related projects.
+- **Contact** — validated form (name, email, phone, service, budget, message)
+  saved to DB with spam honeypot + rate limiting; WhatsApp/email/social cards.
+- **Blog** — database-driven with categories, search, detail pages, share buttons.
+- **Legal** — editable Privacy Policy and Terms & Conditions.
+- **404** — branded page-not-found experience.
+- **Dark/Light mode** — toggle in navbar, saved per user, correct logo variant
+  per theme, system preference respected on first visit.
+- **WhatsApp everywhere** — floating button + every service/CTA uses
+  `https://wa.me/923153560805` with service-specific pre-filled messages.
+  Number and messages are admin-editable.
 
-### Catalogue Sections
-5. **Products** — Full CRUD with direct image upload, variants, specs, stock status, featured/bestseller/new-arrival flags
-6. **Media Library** — Browse, search, and delete all uploaded images. Shows file size, category, and label.
+### Admin dashboard (`#/admin`)
+Secure login (JWT + bcrypt). Default credentials: **admin / DoDigitals@2025**
+(change immediately from the Account page; override the seed password with the
+`ADMIN_PASSWORD` env variable before first run).
 
-### Settings Sections
-7. **Navigation & Footer** — Edit nav menu links (label + path, add/remove/reorder), footer tagline, copyright text, promotional announcement bar
-8. **Contact & WhatsApp** — WhatsApp number (with live validation), default inquiry message, contact email/phone, address, currency
-9. **Social Media** — Instagram, Facebook, TikTok, YouTube links (leave blank to hide)
-10. **Admin Account** — Change username and email (requires current password), change password
-11. **Security** — View active sessions, revoke individual sessions or all others, security feature checklist
-12. **Activity Log** — Last 100 admin actions with timestamp, user, action type, detail, and IP address
+Modules:
+| Module | Capability |
+|---|---|
+| Dashboard | Real counts, recent inquiries, recent activity log |
+| Homepage | Full homepage JSON editor + section visibility switches |
+| About Page | Story/mission/vision/values editor |
+| Navigation | Menu label/link/order/visibility CRUD |
+| Footer | Description, links, contact info, copyright |
+| SEO | Per-page titles, descriptions, keywords, OpenGraph, share image |
+| Services | Full CRUD incl. features, FAQs, WhatsApp messages, ordering, publish |
+| Portfolio | Projects CRUD (multi-image, technologies, featured, demo flag) + categories |
+| Testimonials | CRUD with publish + demo flag (never present demo as real) |
+| Statistics | Editable figures + visibility (demo values clearly noted) |
+| Inquiries | Inbox with search, filters, status workflow, WhatsApp reply, delete |
+| Media | Upload (drag-drop, 5MB, PNG/JPG/WEBP/GIF/SVG), library, alt text, copy URL |
+| Blog | Posts CRUD (drafts, publish, SEO fields, categories) + category management |
+| Site Settings | Name, logos (light/dark), favicon, brand colors (live re-theme), contact info, WhatsApp, theme default, maintenance mode, global CTA |
+| Social Links | Platform URL CRUD with visibility |
+| Account | Profile, change password, session info, logout |
 
-## Security Features
+## 3. Project Structure
 
-- **bcrypt password hashing** (12 rounds). Legacy SHA-256 hashes auto-upgrade on next login.
-- **Server-side session table** — sessions tracked in the database, can be revoked instantly
-- **Login rate limiting** — max 5 failed attempts per username, 10 per IP, per 15 minutes (returns HTTP 429)
-- **HttpOnly + SameSite cookies** — protected against XSS and CSRF
-- **Forced password change** on first login (when using the default seeded password)
-- **Admin activity logging** — all admin actions recorded (product/content/review/account changes, logins, password changes, session revocations). Logs auto-expire after 90 days.
-- **Upload validation** — MIME type + extension + magic-number sniffing. Max 8 MB. Path traversal protection.
-- **All admin APIs protected** — every write operation requires a valid session (returns 401 otherwise)
-- **No secrets in frontend** — admin credentials never hardcoded in client code
+```
+src/
+  app/
+    page.tsx              → single-route entry (renders the hash router)
+    layout.tsx            → SSR settings/brand/SEO injection
+    globals.css           → Tailwind 4 theme tokens (brand green wired in)
+    api/                  → backend (public + admin REST endpoints)
+  components/
+    app-router.tsx        → hash-based router (public pages + admin)
+    site/                 → navbar, footer, cards, reveal animations, shared
+    pages/                → home, about, services, portfolio, contact, blog...
+    admin/                → login, shell, CRUD primitives, 17 modules
+  hooks/                  → use-hash-route, use-site-data
+  lib/
+    db.ts                 → Prisma client
+    auth.ts               → JWT + bcrypt session helpers
+    seed.ts               → idempotent first-run seeding
+    defaults.ts           → default/demo content (single source of truth)
+    content.ts            → server-side content access with fallbacks
+    rate-limit.ts         → in-memory sliding-window limiter
+    brand.ts              → hex→HSL brand theming (SSR + live)
+    api.ts                → ok/bad/adminGuard/logActivity helpers
+    whatsapp.ts           → wa.me link builder + formatting
+prisma/schema.prisma      → all models
+db/custom.db              → SQLite database file (persistent)
+public/brand/             → brand imagery (logos, hero, services, portfolio…)
+scripts/                  → gen-assets, reset-content helpers
+```
 
-## Getting Started
+## 4. Getting Started
 
-### Install & Run
 ```bash
-bun install
+# 1. Install dependencies
+bun install        # or npm install / pnpm install
+
+# 2. Configure environment (see .env.example)
+cp .env.example .env
+
+# 3. Push the database schema
 bun run db:push
-bun run scripts/seed.ts    # seeds products, settings, content, reviews, admin user
-bun run dev
+
+# 4. Start the dev server
+bun run dev        # → http://localhost:3000
 ```
 
-### Default Admin Credentials
-- URL: `/#/admin`
-- Username: `admin`
-- Password: `admin123`
+On first request the database is **seeded automatically** (admin account,
+default content, four services with FAQs, clearly-marked demo portfolio
+projects/testimonials/blog posts, navigation, media library entries).
+Seeding is idempotent — it never overwrites content you edited.
 
-> **You will be forced to change the password on first login.**
+- **Website:** http://localhost:3000
+- **Admin:** http://localhost:3000/#/admin
+- **Default login:** admin / DoDigitals@2025
 
-### Logo Processing
-The transparent PNG logos were generated from the original JPEGs using:
-```bash
-bun run scripts/process-logos.ts
-```
-This script is idempotent and can be re-run. It uses `sharp` to:
-1. Load the JPEG
-2. Make background pixels transparent (threshold-based, with soft edge transition)
-3. Decontaminate edge pixels (remove halos)
-4. Save as lossless PNG with alpha channel
+## 5. Environment Variables
 
-## Environment Variables
-
-| Variable | Default | Purpose |
+| Variable | Purpose | Default |
 |---|---|---|
-| `DATABASE_URL` | `file:.../db/custom.db` | SQLite database path |
-| `ADMIN_SESSION_SECRET` | dev fallback | Signs session cookies. **Set in production.** |
-| `UPLOADS_DIR` | `<project>/public/uploads` | Upload storage. Set to a persistent volume in production. |
-| `NODE_ENV` | `development` | Standard |
+| `DATABASE_URL` | SQLite file path | `file:/home/z/my-project/db/custom.db` (see `.env`) |
+| `AUTH_SECRET` | JWT signing secret — **set a long random value in production** | dev fallback (warned) |
+| `ADMIN_USERNAME` | Seeded admin username | `admin` |
+| `ADMIN_PASSWORD` | Seeded admin password (first run only) | `DoDigitals@2025` |
 
-## API Reference
+No secrets are ever exposed to the frontend; all privileged logic runs in
+API route handlers protected by the session cookie + same-origin checks.
 
-### Public
-- `GET /api/products` — list products (filters: category, featured, bestSeller, newArrival, q, sort)
-- `GET /api/products/:slug` — single product
-- `GET /api/settings` — site settings
-- `GET /api/content` — CMS content (homepage, sections)
-- `GET /api/reviews?approved=true` — approved reviews only
-- `GET /api/admin/me` — session status
+## 6. Production Deployment
 
-### Admin-only (returns 401 without valid session)
-- `POST /api/admin/login` — login (rate-limited)
-- `POST /api/admin/logout`
-- `POST /api/admin/change-password`
-- `GET/PUT /api/admin/account` — view/update username & email
-- `GET/DELETE /api/admin/sessions` — list/revoke sessions
-- `GET /api/admin/activity` — activity log
-- `POST/GET/DELETE /api/upload` — image upload/list/delete
-- `POST /api/products/create` | `PUT/DELETE /api/products/:slug`
-- `PUT /api/settings` | `PUT /api/content`
-- `POST/PUT/DELETE /api/reviews[/:id]`
+1. **Build & run**
+   ```bash
+   bun run build
+   bun run start       # serves the standalone Next.js server
+   ```
+2. **Database** — SQLite ships in `db/custom.db`; mount that folder as a
+   persistent volume on your host. For multi-instance deployments switch
+   Prisma to Postgres by changing `datasource db.provider` in
+   `prisma/schema.prisma` and re-running `bun run db:push`.
+3. **Migrations** — the schema is applied with `prisma db push`. To generate
+   migration files for CI/CD: `bun run db:migrate` (Prisma migrate dev).
+4. **Media storage** — uploads are stored as bytes inside the database and
+   served via `/api/media/[id]/raw`, so they survive restarts without any
+   external bucket. To use S3/R2 instead, change the upload handler in
+   `src/app/api/admin/media/route.ts` and store external URLs in the
+   `MediaAsset.url` column (the admin library already supports URL entries).
+5. **Auth hardening** — set `AUTH_SECRET` to a 64+ char random string and
+   change the admin password immediately. Sessions are httpOnly JWT cookies
+   valid for 7 days.
+6. **SEO** — robots.txt and sitemap.xml are in `public/`. Replace
+   `https://your-domain.com` inside `public/sitemap.xml` with your real
+   domain. Per-page meta is managed in **Admin → SEO**.
 
-## What Still Requires Configuration Before Launch
+### Database backup
 
-1. **Change admin password** (forced on first login)
-2. **Replace sample products** with real catalogue
-3. **Approve genuine reviews** (or delete sample ones) — do not publish fake reviews
-4. **Edit all policy pages** with verified legal text
-5. **Set `ADMIN_SESSION_SECRET`** env var in production
-6. **Set `UPLOADS_DIR`** to a persistent volume in production (so uploads survive redeployments)
-7. **Verify WhatsApp number** is correct
-8. **Test the Buy Now → WhatsApp flow** on a real product
+```bash
+cp db/custom.db backups/custom-$(date +%F).db      # simple file backup
+# or with the SQLite CLI:
+sqlite3 db/custom.db ".backup backups/custom.db"
+```
 
-## Cost
+Schedule daily backups (cron) and keep them off-machine.
 
-All features use built-in functionality, open-source libraries, and the existing architecture. **No paid third-party APIs are required.** Image upload, admin dashboard, CMS, reviews, authentication, and security all use free, open-source solutions (Next.js, Prisma, SQLite, bcrypt, sharp).
+### Error handling & logging
 
-© TIMES UP COLLECTIONS. Time Defines Your Style.
+- API routes return typed JSON errors (`{ "error": "message" }`) with proper
+  status codes; safe messages never leak internals.
+- Admin mutations are recorded in the `ActivityLog` table (visible on the
+  dashboard).
+- Server logs stream to `dev.log` (`bun run dev`) or `server.log`
+  (`bun run start`).
+
+## 7. Security Notes
+
+- Passwords hashed with bcrypt (10 rounds).
+- Sessions: signed JWT (HS256) in httpOnly, sameSite=lax cookies
+  (+ secure flag in production), 7-day expiry.
+- All admin endpoints verify the session server-side; mutations additionally
+  verify the request Origin (CSRF mitigation).
+- Login and password-change endpoints are rate-limited (8 attempts / 15 min
+  per IP); contact form is limited to 5 submissions / 30 min per IP.
+- Upload validation: MIME allow-list + 5 MB cap.
+- Honeypot field silently drops bot submissions.
+- Protected admin routes cannot render without a valid session.
+
+## 8. Content Honesty (demo data policy)
+
+All seeded portfolio projects, testimonials, and blog posts are flagged
+`isDemo: true` and visibly labeled **“Demo Content”** on the site. Statistics
+show a note indicating sample figures. Nothing fabricated is ever presented as
+a genuine client review or business achievement — replace demo rows with real
+data from the dashboard before launch (or simply delete them).
+
+## 9. Useful Scripts
+
+| Command | Description |
+|---|---|
+| `bun run dev` | Development server (port 3000) |
+| `bun run build` / `bun run start` | Production build / serve |
+| `bun run lint` | ESLint |
+| `bun run db:push` | Apply schema to database |
+| `bun scripts/reset-content.ts` | Reset content blobs to defaults (optional keys) |
+| `bun scripts/gen-assets.ts` | Regenerate placeholder brand imagery |
+
+---
+
+**DO DIGITALS — WHERE BRANDS TAKE FLIGHT!**
+WhatsApp: +92 315 3560805 · dodigitals313@gmail.com
